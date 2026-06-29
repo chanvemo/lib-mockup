@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIB アプリ ── ホーム画面コンセプト 3パターン</title>
+<style>
+  :root{
+    --bg:#F4F1EA; --surface:#fff; --ink:#1f1d1a; --muted:#76746c; --hint:#a3a097;
+    --line:rgba(0,0,0,.10); --line2:rgba(0,0,0,.16);
+    --amber-bg:#FAEEDA; --amber-tx:#854F0B;
+    --blue-bg:#E6F1FB; --blue-tx:#185FA5;
+    --teal-bg:#E1F5EE; --teal-tx:#0F6E56;
+    --pink-bg:#FBEAF0; --pink-tx:#993556;
+    --red:#D85A30; --chip:#ECE9E1; --rank:#534AB7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Hiragino Sans','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
+    line-height:1.7;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1040px;margin:0 auto;padding:32px 20px 64px;}
+  header h1{font-size:24px;font-weight:500;margin:0 0 6px;letter-spacing:.02em;}
+  header p{margin:0;color:var(--muted);font-size:14px;max-width:680px;}
+  .principle{background:var(--surface);border:.5px solid var(--line);border-radius:14px;padding:14px 18px;margin:20px 0 8px;font-size:14px;}
+  .principle b{font-weight:500;}
+  .pri4{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .pri4 span{font-size:12.5px;background:var(--chip);padding:4px 12px;border-radius:999px;color:var(--ink);}
+  .core-note{background:#efece4;border:.5px solid var(--line);border-radius:14px;padding:12px 18px;margin:12px 0 0;font-size:13.5px;}
+  .core-note b{font-weight:500;}
+  .core-pills{display:inline-flex;gap:6px;flex-wrap:wrap;margin-left:4px;}
+  .core-pills span{background:var(--teal-bg);color:var(--teal-tx);font-size:12px;padding:2px 10px;border-radius:999px;}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 8px;}
+  .tab{border:.5px solid var(--line2);background:var(--surface);color:var(--muted);border-radius:999px;padding:8px 16px;font-size:14px;cursor:pointer;transition:.15s;}
+  .tab:hover{border-color:var(--ink);}
+  .tab.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .panel{display:none;animation:fade .2s ease;}
+  .panel.on{display:block;}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .lead{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;margin-top:18px;}
+  .lead .info{flex:1 1 300px;min-width:280px;}
+  .reason-badge{display:inline-block;font-size:12px;font-weight:500;padding:4px 12px;border-radius:999px;margin-bottom:10px;}
+  .info h2{font-size:19px;font-weight:500;margin:0 0 4px;}
+  .info .strat{color:var(--muted);font-size:14px;margin:0 0 16px;}
+  .feat{list-style:none;padding:0;margin:0 0 16px;}
+  .feat li{font-size:14px;padding:7px 0;border-top:.5px solid var(--line);display:flex;gap:9px;align-items:flex-start;}
+  .feat li:first-child{border-top:none;}
+  .feat .k{font-weight:500;flex:none;min-width:108px;}
+  .screencap{font-size:13px;color:var(--muted);margin-top:12px;min-height:38px;}
+  .screencap b{color:var(--ink);font-weight:500;}
+  .stage{flex:none;width:300px;}
+  .phone{width:300px;background:var(--surface);border:1px solid var(--line2);border-radius:30px;padding:14px 13px 10px;}
+  .nav{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+  .nav button{border:.5px solid var(--line2);background:var(--surface);border-radius:999px;width:38px;height:38px;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center;}
+  .nav button:hover{border-color:var(--ink);}
+  .nav button:disabled{opacity:.35;cursor:default;}
+  .dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:170px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--line2);cursor:pointer;}
+  .dot.on{background:var(--ink);}
+  .sc-title{text-align:center;font-size:13px;color:var(--muted);margin-bottom:8px;}
+  .screen{min-height:440px;display:flex;flex-direction:column;}
+  .ph-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
+  .logo{font-family:'Times New Roman',Georgia,serif;font-size:19px;letter-spacing:.14em;}
+  .sec{font-size:12px;font-weight:500;color:var(--ink);margin:10px 0 6px;}
+  svg{display:block}
+  .card{border:.5px solid var(--line);border-radius:10px;padding:10px;}
+  .chip{font-size:11px;background:var(--chip);color:var(--muted);padding:3px 9px;border-radius:999px;white-space:nowrap;}
+  .av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex:none;}
+  .tabbar{margin-top:auto;padding-top:11px;display:flex;justify-content:space-around;align-items:center;border-top:.5px solid var(--line);color:var(--hint);}
+  .fab{width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;}
+  .btn-primary{width:100%;background:var(--ink);color:#fff;border:none;border-radius:9px;padding:10px;font-size:13px;cursor:pointer;}
+  .search{display:flex;align-items:center;gap:7px;background:var(--surface);border:.5px solid var(--line2);border-radius:999px;padding:8px 12px;font-size:12px;color:var(--hint);margin-bottom:9px;}
+  .crow{display:flex;gap:6px;overflow:hidden;margin-bottom:10px;}
+  .rankno{width:22px;height:22px;border-radius:6px;background:var(--rank);color:#fff;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex:none;}
+  .tukurepo{font-size:11px;background:#fbece4;color:var(--red);padding:4px 8px;border-radius:7px;margin-top:7px;display:inline-flex;gap:4px;align-items:center;}
+  table{width:100%;border-collapse:collapse;margin-top:18px;background:var(--surface);border-radius:12px;overflow:hidden;border:.5px solid var(--line);}
+  th,td{text-align:left;padding:12px 14px;font-size:13.5px;border-bottom:.5px solid var(--line);vertical-align:top;}
+  th{background:#efece4;font-weight:500;}
+  td:first-child{font-weight:500;color:var(--muted);width:140px;}
+  tr:last-child td{border-bottom:none;}
+  .rowcore td{background:var(--teal-bg);color:var(--teal-tx);}
+  .rowcore td:first-child{color:var(--teal-tx);}
+  .qlist{counter-reset:q;list-style:none;padding:0;margin:18px 0 0;}
+  .qlist li{counter-increment:q;background:var(--surface);border:.5px solid var(--line);border-radius:10px;padding:13px 16px 13px 48px;margin-bottom:10px;position:relative;font-size:14.5px;}
+  .qlist li::before{content:counter(q);position:absolute;left:14px;top:13px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;}
+  .foot{margin-top:28px;color:var(--hint);font-size:12px;}
+  @media(max-width:680px){.stage{width:100%;}.phone{width:100%;max-width:320px;margin:0 auto;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>LIB アプリ ── ホーム画面コンセプト 3パターン</h1>
+    <p>接客の科学化（成功事例の共有）と VOC（商品改善提案）を1つにする社内アプリ。社内ブレスト用の叩き台です。</p>
+  </header>
+  <div class="principle">
+    <b>設計の4原則：</b>
+    <div class="pri4">
+      <span>① ついつい開きたくなる（ランキング・つくれぽ・反応）</span>
+      <span>② 開く必要がある（朝礼・連絡・レシピ検索）</span>
+      <span>③ 考えずに感覚的に使える（声で30秒・誰もが知るクックパッド型）</span>
+      <span>④ 他業態へ横展開できる汎用UX</span>
+    </div>
+  </div>
+  <div class="core-note">
+    <b>全パターン共通の必須コア：</b>
+    <span class="core-pills"><span>① 接客事例の共有＆レシピ図書館</span><span>② 商品改善提案(VOC)</span><span>③ メンバー名簿</span></span>
+    <div style="margin-top:6px;color:var(--muted);">接客事例は<b style="color:var(--ink)">クックパッド型のレシピ</b>として蓄積・検索でき（＝LIBの財産）、<b style="color:var(--ink)">つくれぽ</b>（やってみた報告）で投稿者のモチベが続く。A/B/C の違いは、この土台の上に <b style="color:var(--ink)">どんな“毎日開く理由”のレイヤーを足すか</b>。</div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-t="REC">★ 推奨：統合案</button>
+    <button class="tab" data-t="CORE">共通コア（必須）</button>
+    <button class="tab" data-t="A">A ＋毎朝のニュース</button>
+    <button class="tab" data-t="B">B ＋朝礼ハブ</button>
+    <button class="tab" data-t="C">C ＋店舗のホーム</button>
+    <button class="tab" data-t="CMP">3パターン比較</button>
+    <button class="tab" data-t="Q">議論の問い</button>
+  </div>
+
+  <div class="panel on" data-p="REC"></div>
+  <div class="panel" data-p="CORE"></div>
+  <div class="panel" data-p="A"></div>
+  <div class="panel" data-p="B"></div>
+  <div class="panel" data-p="C"></div>
+
+  <div class="panel" data-p="CMP">
+    <table>
+      <tr><th>観点</th><th>A ＋毎朝のニュース</th><th>B ＋朝礼ハブ</th><th>C ＋店舗のホーム</th></tr>
+      <tr class="rowcore"><td>共通コア（必須）</td><td colspan="3">① 接客事例の共有＆レシピ図書館（クックパッド型・つくれぽ）　② 商品改善提案(VOC)　③ メンバー名簿 ── 3パターンすべてに入る</td></tr>
+      <tr><td>足すレイヤー</td><td>今週のランキング＋讃え合い＋自分のメモ</td><td>朝礼（数字・連絡・チェック）</td><td>連絡（流れない）＋つながり</td></tr>
+      <tr><td>開く理由</td><td>感情（ランキングで見られたい）</td><td>業務必須（朝礼がここで完結）</td><td>連絡が集まる／仲間が見える</td></tr>
+      <tr><td>形骸化しにくさ</td><td>ランキング＋つくれぽのループ</td><td>毎朝必ず使う業務動線</td><td>流れない連絡の受け皿＋全部入り</td></tr>
+      <tr><td>Slack連絡課題</td><td>扱わない</td><td>連絡欄で一部</td><td>正面から解決（既読/確認・固定）</td></tr>
+      <tr><td>横展開のしやすさ</td><td>◎ レシピ＋ランキングは業態を選ばない</td><td>○ 朝礼の項目を差し替えれば可</td><td>○ 連絡・名簿は汎用</td></tr>
+      <tr><td>リスク</td><td>文化が根付かないと“任意”に</td><td>業務感が出すぎる恐れ</td><td>機能過多・スコープ肥大</td></tr>
+    </table>
+    <div class="principle" style="margin-top:18px;">
+      <b>叩きの推奨：</b> 共通コア（事例レシピ＋VOC＋名簿）を土台に、B の骨格（朝礼で必ず開く）＋ A の心臓（ランキング・つくれぽ）＋ C の“流れない連絡”を1画面に統合 ＝ <b>「★ 推奨：統合案」タブ</b>を参照。店舗共有端末＋個人切替・大きな振り返りボタンも内包。
+    </div>
+  </div>
+
+  <div class="panel" data-p="Q">
+    <ol class="qlist">
+      <li>毎日開く理由は、感情・ランキング(A)／業務必須・朝礼(B)／連絡・つながり(C)のどれが現場に効く？</li>
+      <li>クックパッド型レシピの「カテゴリ」は何がいい？（贈り物／声かけ／予算／エシカル／…）</li>
+      <li>「つくれぽ（やってみた報告）」は投稿のモチベになりそう？ 重く感じない運用にするには？</li>
+      <li>ランキングの基準は？（よく読まれた／♡が多い／つくれぽが多い）期間は週次でいい？</li>
+      <li>メンバー名簿に載せたい「人となり」と公開範囲は？</li>
+      <li>朝礼シートのどこまで入れる？ コミュニケーションはチャット型かストック型お知らせか？</li>
+      <li>「これが無いと開かない」機能は？ ITが苦手な人でも迷わず使えるか？</li>
+    </ol>
+  </div>
+
+  <div class="foot">LIB アプリ開発 ／ VEMO × Claude Code ／ 2026年6月 ・ このページは叩き台で、議論に合わせて更新します。</div>
+</div>
+
+<script>
+const I={
+ bell:'<path d="M10 5a2 2 0 1 1 4 0 7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/>',
+ plus:'<path d="M12 5v14"/><path d="M5 12h14"/>',
+ home:'<path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/>',
+ book:'<path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6v13"/><path d="M12 6v13"/><path d="M21 6v13"/>',
+ heart:'<path d="M19.5 12.6l-7.5 7.4l-7.5 -7.4a5 5 0 1 1 7.5 -6.6a5 5 0 1 1 7.5 6.6"/>',
+ mic:'<path d="M9 5a3 3 0 0 1 6 0v5a3 3 0 0 1 -6 0z"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+ check:'<path d="M5 12l5 5l10 -10"/>',
+ user:'<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>',
+ users:'<path d="M9 7a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.9"/>',
+ arrowl:'<path d="M5 12h14"/><path d="M5 12l6 6"/><path d="M5 12l6 -6"/>',
+ x:'<path d="M18 6l-12 12"/><path d="M6 6l12 12"/>',
+ search:'<path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/>',
+ spark:'<path d="M12 3l2 5l5 2l-5 2l-2 5l-2 -5l-5 -2l5 -2z"/>',
+ settings:'<path d="M4 6h8"/><path d="M16 6h4"/><path d="M4 12h2"/><path d="M10 12h10"/><path d="M4 18h8"/><path d="M16 18h4"/>',
+ pin:'<path d="M9 4v6l-2 4v2h10v-2l-2 -4v-6"/><path d="M12 16v5"/><path d="M8 4h8"/>',
+ photo:'<path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"/><path d="M3 16l5 -5c.9 -.9 2.1 -.9 3 0l5 5"/><path d="M14 14l1 -1c.9 -.9 2.1 -.9 3 0l3 3"/>',
+ sun:'<path d="M3 17h18"/><path d="M12 3v3"/><path d="M5.6 9.6l-1.4 -1.4"/><path d="M18.4 9.6l1.4 -1.4"/><path d="M8 17a4 4 0 0 1 8 0"/>'
+};
+function ic(n,s){s=s||18;return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(I[n]||'')+'</svg>';}
+function tabbar(active){
+  const items=[['home','home'],['book','recipe'],['rec','F'],['users','members'],['user','mypage']];
+  return '<div class="tabbar">'+items.map(function(it){
+    if(it[1]==='F')return '<span class="fab" style="width:auto;height:auto;padding:8px 13px;border-radius:999px;gap:5px">'+ic('mic',16)+'<span style="font-size:11px;font-weight:500">ふりかえり</span></span>';
+    var col=it[1]===active?'var(--ink)':'var(--hint)';
+    return '<span style="color:'+col+'">'+ic(it[0],19)+'</span>';
+  }).join('')+'</div>';
+}
+
+const RANKS=[['1','贈り物を“完成”させる名刺入れ＋刻印','八重洲・サキ'],['2','急ぎ客の“2回目サイン”声かけ','横浜・リコ'],['3','通過客を“自分用”に変えるトーク','広島・ミオ'],['4','作り手の物語で隣の客まで巻き込む','梅田・ハル']];
+const RECIPES=[
+ ['🎁','贈り物を“完成”させる 名刺入れ＋刻印','八重洲・サキ','201','贈る相手を聞く→刻印で“贈り物を完成”させると単価が上がる','3'],
+ ['⏱️','急ぎ客の“2回目サイン”声かけ','横浜・リコ','98','手に取って2回目に置いた瞬間だけ声をかけると逃げない','3'],
+ ['💴','用途ファーストのアップセル','天神・レン','120','価格でなく『何に使うか』を先に聞き、毎日使うなら正直に上位を','2'],
+ ['🌍','作り手の物語で隣の客まで巻き込む','梅田・ハル','134','“この作り手・この革”の顔で語ると伝播する','2']
+];
+
+function feedHome(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span class="logo">LIB</span><span style="color:var(--muted)">'+ic('bell',16)+'</span></div>'+
+    '<div class="sec">最新の事例</div>'+
+    '<div class="card" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><span class="av" style="width:21px;height:21px;background:var(--blue-bg);color:var(--blue-tx)">あ</span><span style="font-size:12px;color:var(--muted)">天神・あおん</span></div><div style="font-size:13px">迷うお客様の背中を押せた</div><div style="display:flex;gap:12px;margin-top:6px;font-size:12px;color:var(--muted)"><span style="display:inline-flex;gap:4px;align-items:center">'+ic('heart',14)+'12</span><span>真似します！</span></div></div>'+
+    '<div class="card" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><span class="av" style="width:21px;height:21px;background:var(--teal-bg);color:var(--teal-tx)">り</span><span style="font-size:12px;color:var(--muted)">中野・りょう</span></div><div style="font-size:13px">ギフト相談から会話が広がった</div></div>'+
+    '<div class="card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><span class="av" style="width:21px;height:21px;background:var(--amber-bg);color:var(--amber-tx)">さ</span><span style="font-size:12px;color:var(--muted)">八重洲・サキ</span></div><div style="font-size:13px">刻印提案で贈り物が完成した</div></div>'+
+    tabbar('home')+'</div>';
+}
+function rankingHome(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span class="logo">LIB</span><span style="color:var(--muted)">'+ic('bell',16)+'</span></div>'+
+    '<div style="background:var(--amber-bg);border-radius:10px;padding:9px;margin-bottom:10px"><div style="font-size:10px;color:var(--amber-tx);margin-bottom:2px">★ 今日の全店ニュース</div><div style="font-size:12.5px;line-height:1.4;color:var(--amber-tx);font-weight:500">サキさん「贈り物を“完成”させる刻印提案」</div></div>'+
+    '<div class="sec">🔥 今週よく読まれている（全店）</div>'+
+    RANKS.map(function(r){return '<div class="card" style="margin-bottom:7px;display:flex;gap:9px;align-items:center"><span class="rankno">'+r[0]+'</span><div style="min-width:0"><div style="font-size:12.5px;line-height:1.35">'+r[1]+'</div><div style="font-size:10.5px;color:var(--hint);margin-top:1px">'+r[2]+'</div></div></div>'}).join('')+
+    '<div class="sec">📥 あなたのメモ（アーカイブ）</div>'+
+    ['出張帰りの男性、息子に就職祝い','急ぎの女性、声かけ早すぎた'].map(function(t){return '<div class="card" style="margin-bottom:6px;font-size:12px;color:var(--muted)">▸ '+t+'</div>'}).join('')+
+    tabbar('home')+'</div>';
+}
+function cookpad(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px">'+ic('book',16)+'接客レシピ</span><span style="font-size:10px;color:var(--hint)">みんなの接客レシピ</span></div>'+
+    '<div class="search">'+ic('search',14)+'レシピを検索（声かけ／贈り物 …）</div>'+
+    '<div class="crow"><span class="chip" style="background:var(--red);color:#fff">すべて</span><span class="chip">🎁 贈り物</span><span class="chip">⏱️ 声かけ</span><span class="chip">💴 予算</span></div>'+
+    RECIPES.slice(0,3).map(function(r){return '<div class="card" style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:flex-start"><span style="font-size:20px;line-height:1">'+r[0]+'</span><div style="min-width:0"><div style="font-size:13px;font-weight:500;line-height:1.35">'+r[1]+'</div><div style="font-size:11px;color:var(--hint);margin:2px 0 4px">'+r[2]+'　♡'+r[4]+'</div><div style="font-size:11.5px;color:var(--muted);line-height:1.4">'+r[3]+'</div><span class="tukurepo">📝 つくれぽ '+r[5]+'件</span></div></div></div>'}).join('')+
+    tabbar('recipe')+'</div>';
+}
+function recipeDetail(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="color:var(--muted)">'+ic('arrowl',17)+'</span><span style="font-size:13px;color:var(--muted)">接客レシピ</span><span style="color:var(--muted)">'+ic('heart',16)+'</span></div>'+
+    '<div style="display:flex;gap:9px;align-items:center;margin-bottom:9px"><span style="font-size:26px">🎁</span><div><div style="font-size:14px;font-weight:500;line-height:1.3">贈り物を“完成”させる<br>名刺入れ＋刻印</div><div style="font-size:11px;color:var(--hint);margin-top:2px">八重洲・サキ　♡201</div></div></div>'+
+    '<div class="card" style="background:#f6f3ec;border:none;margin-bottom:10px"><div style="font-size:11px;color:var(--hint);margin-bottom:4px">コツ</div><div style="font-size:12.5px;line-height:1.6;color:var(--ink)">贈る相手を先に聞く → 刻印で“贈り物を完成”させると、単価が自然に上がる。</div></div>'+
+    '<button class="btn-primary" style="margin-bottom:12px">やってみる（つくれぽを書く）</button>'+
+    '<div class="sec">📝 つくれぽ 3件（みんなのやってみた・工夫）</div>'+
+    [['り','横浜・リコ','名入れの提案、即決でした！日付も入れたら喜ばれた'],['み','広島・ミオ','出張土産にも応用。自分用も一緒に売れた']].map(function(t){return '<div class="card" style="margin-bottom:7px;display:flex;gap:8px"><span class="av" style="width:24px;height:24px;background:var(--teal-bg);color:var(--teal-tx)">'+t[0]+'</span><div><div style="font-size:11px;color:var(--hint)">'+t[1]+'</div><div style="font-size:12px;line-height:1.45">'+t[2]+'</div></div></div>'}).join('')+
+    tabbar('recipe')+'</div>';
+}
+function recordScreen(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="color:var(--muted)">'+ic('arrowl',17)+'</span><span style="font-size:13px;color:var(--muted)">接客の振り返り</span><span style="color:var(--muted)">'+ic('x',17)+'</span></div>'+
+    '<div style="text-align:center;margin:8px 0 12px;font-size:13px;color:var(--muted)">静かな場所で30秒、話すだけ</div>'+
+    '<div class="card" style="background:#f6f3ec;border:none;margin-bottom:14px"><div style="font-size:11px;color:var(--hint);margin-bottom:6px">話すヒント</div><div style="font-size:12.5px;line-height:1.8;color:var(--muted)">・誰に（どんなお客様）<br>・何を話したか<br>・お客様がどう変わったか</div></div>'+
+    '<div style="display:flex;align-items:flex-end;justify-content:center;gap:4px;height:40px;margin-bottom:10px">'+[14,28,36,20,32,12,24,30].map(function(hh){return '<span style="width:4px;height:'+hh+'px;background:var(--ink);opacity:.55;border-radius:9px"></span>'}).join('')+'</div>'+
+    '<div style="text-align:center;font-size:15px;font-weight:500;margin-bottom:16px">0:18</div>'+
+    '<div style="display:flex;justify-content:center;margin-bottom:8px"><span style="width:64px;height:64px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center">'+ic('mic',28)+'</span></div>'+
+    '<div style="text-align:center;font-size:12px;color:var(--hint)">タップで停止</div></div>';
+}
+function aiConfirm(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="color:var(--muted)">'+ic('arrowl',17)+'</span><span style="font-size:13px;color:var(--muted)">内容を確認</span><span></span></div>'+
+    '<div class="card" style="margin-bottom:9px"><div style="font-size:11px;color:var(--hint);margin-bottom:4px;display:flex;align-items:center;gap:4px">'+ic('spark',12)+'AIが整理しました</div><div style="font-size:12.5px;line-height:1.7;color:var(--ink)"><b style="font-weight:500">誰に</b>：迷っていたリピーター様<br><b style="font-weight:500">話したこと</b>：用途を一緒に整理<br><b style="font-weight:500">変化</b>：即決に</div></div>'+
+    '<div style="font-size:11px;color:var(--hint);margin-bottom:5px">お客様（自動タグ・修正可）</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px"><span class="chip">30代</span><span class="chip">男性</span><span class="chip">ビジネス</span><span class="chip">リピーター</span></div>'+
+    '<div style="font-size:11px;color:var(--hint);margin-bottom:5px">誰の事例ですか？（仲間自慢OK）</div><div style="display:flex;gap:6px;margin-bottom:11px"><span style="font-size:12px;background:var(--ink);color:#fff;padding:4px 11px;border-radius:999px">自分</span><span style="font-size:12px;border:.5px solid var(--line2);color:var(--muted);padding:4px 11px;border-radius:999px">仲間</span></div>'+
+    '<div style="font-size:11px;color:var(--hint);margin-bottom:5px">カテゴリ</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px"><span style="font-size:11px;background:var(--blue-bg);color:var(--blue-tx);padding:3px 9px;border-radius:999px">接客事例</span><span class="chip">＋商品提案</span></div>'+
+    '<button class="btn-primary">投稿する</button></div>';
+}
+function postDetail(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="color:var(--muted)">'+ic('arrowl',17)+'</span><span style="font-size:13px;color:var(--muted)">事例</span><span></span></div>'+
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:9px"><span class="av" style="width:28px;height:28px;background:var(--amber-bg);color:var(--amber-tx)">り</span><div><div style="font-size:13px">八重洲・りさこ</div><div style="font-size:11px;color:var(--hint)">今朝の全店ニュース</div></div></div>'+
+    '<div style="font-size:13px;line-height:1.6;margin-bottom:12px">迷っていたリピーター様に用途を一緒に整理して提案。「それなら即決」と。</div>'+
+    '<div style="display:flex;gap:7px;margin-bottom:12px">'+['♡ 12','私も','真似します'].map(function(t){return '<span style="flex:1;text-align:center;font-size:12px;border:.5px solid var(--line2);border-radius:999px;padding:7px 0;color:var(--muted)">'+t+'</span>'}).join('')+'</div>'+
+    '<div style="font-size:11px;color:var(--hint);margin-bottom:6px">コメント</div>'+
+    '<div class="card" style="margin-bottom:7px;font-size:12.5px"><span style="color:var(--muted)">あおん：</span>真似します！</div>'+
+    '<div class="card" style="font-size:12.5px"><span style="color:var(--muted)">きゅう：</span>素敵な提案◎</div>'+
+    tabbar('home')+'</div>';
+}
+function roster(){
+  var mem=[
+    ['札幌','ユイ','フェロー','雪道の靴に詳しい。コート小物が好き','var(--blue-bg)','var(--blue-tx)'],
+    ['八重洲','りさこ','店長','革小物が得意。休日はカフェ巡り','var(--amber-bg)','var(--amber-tx)'],
+    ['中野','りょう','フェロー','メンズ靴に詳しい。野球観戦が趣味','var(--teal-bg)','var(--teal-tx)'],
+    ['名古屋','ソウ','フェロー','ギフト包装が丁寧。コーヒー好き','var(--pink-bg)','var(--pink-tx)'],
+    ['梅田','ハル','フェロー','物語で売るのが上手。読書家','var(--amber-bg)','var(--amber-tx)'],
+    ['広島','ミオ','フェロー','旅行需要の接客が得意。猫派','var(--teal-bg)','var(--teal-tx)']
+  ];
+  var areas=['全エリア','北海道','関東','中部','関西','中国'];
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="font-size:13px;color:var(--muted);display:flex;align-items:center;gap:5px">'+ic('users',16)+'メンバー</span><span style="color:var(--muted)">'+ic('search',15)+'</span></div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px;font-size:11px">'+areas.map(function(a,i){return i===0?'<span style="background:var(--ink);color:#fff;padding:4px 10px;border-radius:99px">'+a+'</span>':'<span class="chip">'+a+'</span>'}).join('')+'</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+    mem.map(function(m){return '<div class="card" style="padding:7px"><div style="aspect-ratio:1/1;background:'+m[4]+';color:'+m[5]+';border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:500;margin-bottom:7px">'+m[1].charAt(0)+'</div><div style="font-size:12.5px;font-weight:500;line-height:1.2">'+m[1]+'</div><div style="font-size:10.5px;color:var(--hint);margin:1px 0 3px">'+m[0]+'・'+m[2]+'</div><div style="font-size:11px;color:var(--muted);line-height:1.4">'+m[3]+'</div></div>'}).join('')+
+    '</div>'+
+    tabbar('members')+'</div>';
+}
+function myPage(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="font-size:13px;color:var(--muted)">マイページ</span><span style="color:var(--muted)">'+ic('settings',15)+'</span></div>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="av" style="width:40px;height:40px;background:var(--amber-bg);color:var(--amber-tx);font-size:15px">り</span><div><div style="font-size:14px;font-weight:500">りさこ</div><div style="font-size:11px;color:var(--hint)">八重洲</div></div></div>'+
+    '<div style="display:flex;gap:7px;margin-bottom:13px">'+[['投稿レシピ','23'],['もらった♡','156'],['つくれぽ','41']].map(function(m){return '<div style="flex:1;background:#f6f3ec;border-radius:10px;padding:8px 4px;text-align:center"><div style="font-size:10px;color:var(--muted)">'+m[0]+'</div><div style="font-size:16px;font-weight:500">'+m[1]+'</div></div>'}).join('')+'</div>'+
+    '<div style="font-size:11px;color:var(--hint);margin-bottom:6px">自分の提案とステータス（VOC）</div>'+
+    '<div class="card" style="margin-bottom:7px"><div style="font-size:12.5px;margin-bottom:5px">マグネット→ファスナー希望</div><span style="font-size:11px;background:var(--teal-bg);color:var(--teal-tx);padding:3px 9px;border-radius:999px">✓ 採用</span></div>'+
+    '<div class="card" style="margin-bottom:7px"><div style="font-size:12.5px;margin-bottom:5px">内ポケット追加の声</div><span style="font-size:11px;background:var(--blue-bg);color:var(--blue-tx);padding:3px 9px;border-radius:999px">検討中</span></div>'+
+    '<div class="card"><div style="font-size:12.5px;margin-bottom:5px">ショルダー長さ調整</div><span style="font-size:11px;background:var(--chip);color:var(--muted);padding:3px 9px;border-radius:999px">受付済</span></div>'+
+    tabbar('mypage')+'</div>';
+}
+
+function profileSwitch(){
+  var ppl=[['りさこ','var(--amber-bg)','var(--amber-tx)'],['あおん','var(--blue-bg)','var(--blue-tx)'],['りょう','var(--teal-bg)','var(--teal-tx)'],['さき','var(--pink-bg)','var(--pink-tx)']];
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="font-size:13px;color:var(--muted)">八重洲店 端末</span><span style="color:var(--hint)">'+ic('settings',15)+'</span></div>'+
+    '<div style="text-align:center;margin:16px 0 4px;font-size:17px;font-weight:500">今日は誰？</div>'+
+    '<div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:18px">タップして切り替え（投稿は個人として残ります）</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'+
+    ppl.map(function(p){return '<div style="text-align:center"><span class="av" style="width:66px;height:66px;background:'+p[1]+';color:'+p[2]+';font-size:24px;margin:0 auto 6px">'+p[0].charAt(0)+'</span><div style="font-size:13px">'+p[0]+'</div></div>'}).join('')+
+    '</div>'+
+    '<div style="text-align:center;margin-top:20px;padding-top:12px;border-top:.5px solid var(--line);font-size:11px;color:var(--hint);line-height:1.6">店舗共有端末モード／個人スマホ どちらでも利用可<br>個人スマホに抵抗がある人も、店舗端末から参加できる</div>'+
+    '</div>';
+}
+function integratedHome(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span class="logo">LIB</span><span style="display:flex;gap:9px;align-items:center"><span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span class="av" style="width:20px;height:20px;background:var(--amber-bg);color:var(--amber-tx);font-size:10px">り</span>りさこ ▾</span><span style="color:var(--muted)">'+ic('bell',16)+'</span></span></div>'+
+    '<button class="btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;padding:14px;margin-bottom:13px">'+ic('mic',18)+'接客をふりかえる（30秒）</button>'+
+    '<div class="sec">🔥 今週よく読まれている</div>'+
+    RANKS.slice(0,2).map(function(r){return '<div class="card" style="margin-bottom:7px;display:flex;gap:9px;align-items:center"><span class="rankno">'+r[0]+'</span><div style="min-width:0"><div style="font-size:12px;line-height:1.35">'+r[1]+'</div><div style="font-size:10px;color:var(--hint)">'+r[2]+'</div></div></div>'}).join('')+
+    '<div class="sec">☀️ 今日の朝礼</div>'+
+    '<div style="display:flex;gap:6px;margin-bottom:8px">'+[['入店','84'],['客単価','¥9k'],['購買率','32%']].map(function(m){return '<div style="flex:1;background:#f6f3ec;border-radius:9px;padding:6px 3px;text-align:center"><div style="font-size:9px;color:var(--muted)">'+m[0]+'</div><div style="font-size:14px;font-weight:500">'+m[1]+'</div></div>'}).join('')+'</div>'+
+    '<div style="background:var(--blue-bg);border-radius:9px;padding:8px"><span style="display:inline-flex;gap:4px;align-items:center;font-size:10px;color:var(--blue-tx);margin-bottom:2px">'+ic('pin',11)+'連絡（要確認）</span><div style="font-size:11.5px;font-weight:500;line-height:1.4;color:var(--blue-tx)">秋AWARD〆切 6/30 ・ 刻印機メンテ14時</div></div>'+
+    tabbar('home')+'</div>';
+}
+
+const CAP_REC='誰でも知るクックパッド型。事例＝レシピで蓄積・検索でき、LIBの財産になる。全パターン共通。';
+const CAP_TUK='つくれぽ＝やってみた報告。真似した人の工夫が集まり、投稿者のモチベが続く。全パターン共通。';
+const CAP_REC2='接客直後・静かな場所で30秒、話すだけ（澤山さん助言）。全パターン共通。';
+const CAP_AI='1本の声から事例とVOC(要望)を自動抽出。全パターン共通。';
+const CAP_ROS='他エリアの仲間の人となりが分かる。店舗間の距離を縮める。全パターン共通。';
+
+const PATTERNS={
+REC:{tag:'★ 推奨',name:'統合MVP案（プロUIUX推奨）',rb:{bg:'var(--teal-bg)',tx:'var(--teal-tx)'},
+  reason:'開きたい × 開く必要 × 簡単',
+  strat:'採用率が最大の壁。だから「開く必要がある（朝礼）」と「開きたくなる（ランキング・つくれぽ）」を1つのホームに統合し、Cの“流れない連絡”を軽く足す。録音は大きく明示。店舗共有端末でも個人切替で投稿できる（ITが苦手な人も安心）。',
+  feat:[['統合ホーム','ランキング＋朝礼の数字/連絡＋大きな振り返りボタンを1画面に'],['共通コア','レシピ図書館＋つくれぽ＋VOC＋名簿'],['流れない連絡','C由来。Slack取りこぼし対策を軽量に'],['店舗端末＋個人切替','Netflix風プロフィール選択で誰でも投稿']],
+  screens:[
+   {t:'1. 統合ホーム（推奨）', cap:'ランキング(開きたい)＋朝礼(開く必要)＋大きな“ふりかえり”ボタンを1画面に。迷わない。', h:integratedHome()},
+   {t:'2. ユーザー切替（店舗端末）', cap:'店舗共有端末でも「今日は誰？」で個人を選び、投稿は個人として残る（Netflix風）。', h:profileSwitch()},
+   {t:'3. 録音（共通）', cap:CAP_REC2, h:recordScreen()},
+   {t:'4. AI確認・タグ付け（共通）', cap:CAP_AI, h:aiConfirm()},
+   {t:'5. 接客レシピ＝クックパッド（共通）', cap:CAP_REC, h:cookpad()},
+   {t:'6. レシピ詳細・つくれぽ（共通）', cap:CAP_TUK, h:recipeDetail()},
+   {t:'7. メンバー名簿（共通）', cap:CAP_ROS, h:roster()}
+  ]},
+CORE:{tag:'共通',name:'共通コア（全パターン必須）',rb:{bg:'#e4e0d6',tx:'#5f5e5a'},
+  reason:'どのパターンにも必ず入る土台',
+  strat:'接客事例の共有（クックパッド型レシピ図書館＋つくれぽ）と商品改善提案（VOC）、メンバー名簿は全パターン必須。A/B/C はこの土台の上に「毎日開く理由」を足す違い。',
+  feat:[['接客レシピ図書館','事例＝レシピで蓄積・検索。LIBの財産（クックパッド型）'],['つくれぽ','やってみた報告で投稿者のモチベが続く'],['商品改善提案(VOC)','投稿→AI集約→レビュー会→投稿者へ通知(6段階)'],['メンバー名簿','他店舗・他エリアの人となりが分かる']],
+  screens:[
+   {t:'1. 接客レシピ＝クックパッド（共通）', cap:CAP_REC, h:cookpad()},
+   {t:'2. レシピ詳細・つくれぽ（共通）', cap:CAP_TUK, h:recipeDetail()},
+   {t:'3. 録音（共通）', cap:CAP_REC2, h:recordScreen()},
+   {t:'4. AI確認・タグ付け（共通）', cap:CAP_AI, h:aiConfirm()},
+   {t:'5. 接客事例フィード（共通）', cap:'最新の事例が流れる。リアクションで讃え合う。全パターン共通。', h:feedHome()},
+   {t:'6. 商品改善提案＝マイページ（共通）', cap:'自分の提案が受付→検討→採用と進むのが見える。投稿レシピ・♡・つくれぽも。全パターン共通。', h:myPage()},
+   {t:'7. メンバー名簿（共通）', cap:CAP_ROS, h:roster()}
+  ]},
+
+A:{tag:'A',name:'＋毎朝のニュース',rb:{bg:'var(--amber-bg)',tx:'var(--amber-tx)'},
+  reason:'開く理由：感情・ランキング',
+  strat:'共通コア（レシピ＋VOC＋名簿）の上に、ランキングと讃え合いの編集レイヤーを足す。「🔥 今週よく読まれている」で自分の事例が上位に入る嬉しさ、翌朝のニュース、自分のメモのアーカイブ。ついつい開きたくなる。',
+  feat:[['今週よく読まれている','全店ランキング。上位に入りたくて投稿が増える'],['あなたのメモ','自分の事例アーカイブ＝マイ・レシピ帳'],['翌朝ニュース＋反応','讃え合いのループ'],['（共通）','レシピ・VOC・名簿は土台として搭載']],
+  screens:[
+   {t:'1. ホーム＝今週のニュース', cap:'ランキング＋今日のニュース＋あなたのメモ。開くだけで“今週の主役”が分かる。', h:rankingHome()},
+   {t:'2. 録音（共通）', cap:CAP_REC2, h:recordScreen()},
+   {t:'3. AI確認・タグ付け（共通）', cap:CAP_AI, h:aiConfirm()},
+   {t:'4. 接客レシピ＝クックパッド（共通）', cap:CAP_REC, h:cookpad()},
+   {t:'5. 投稿詳細・リアクション（共通）', cap:'ワンタップ絵文字＋プリセットコメント。讃え合いの燃料。全パターン共通。', h:postDetail()},
+   {t:'6. メンバー名簿（共通）', cap:CAP_ROS, h:roster()}
+  ]},
+
+B:{tag:'B',name:'＋朝礼ハブ',rb:{bg:'var(--blue-bg)',tx:'var(--blue-tx)'},
+  reason:'開く理由：業務必須',
+  strat:'共通コア（レシピ＋VOC＋名簿）の上に、朝礼という業務動線を足す。数字・連絡・チェックリストがあるから毎朝必ず開く。「開く必要がある」に最も直球。',
+  feat:[['数字・KPI','入店・客単価・購買率・顧客FB件数を毎朝表示'],['お客様共有/連絡','朝礼シートの共有事項をそのまま'],['開店前チェック','クリンネス/VMD/身だしなみをタップ完了'],['（共通）','レシピ・VOC・名簿は土台として搭載']],
+  screens:[
+   {t:'1. 今日の朝礼（ホーム）', cap:'毎朝の朝礼がここで完結するから必ず開く。数字・連絡・事例・チェックが一望。',
+    h:'<div class="screen">'+
+      '<div class="ph-hd"><span style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:5px">'+ic('sun',16)+'今日の朝礼</span><span style="font-size:11px;color:var(--hint)">6/28 八重洲</span></div>'+
+      '<div style="display:flex;gap:7px;margin-bottom:11px">'+[['入店','84'],['客単価','¥9k'],['購買率','32%']].map(function(m){return '<div style="flex:1;background:#f6f3ec;border-radius:10px;padding:8px 4px;text-align:center"><div style="font-size:10px;color:var(--muted)">'+m[0]+'</div><div style="font-size:16px;font-weight:500">'+m[1]+'</div></div>'}).join('')+'</div>'+
+      '<div style="font-size:11px;color:var(--hint);margin-bottom:5px">お客様共有・連絡</div><div class="card" style="margin-bottom:9px;font-size:12.5px;line-height:1.6">・刻印機メンテ 14時<br>・新色バッグ本日入荷</div>'+
+      '<div style="font-size:11px;color:var(--hint);margin-bottom:5px">今日の事例（科学化）</div><div style="background:var(--amber-bg);border-radius:10px;padding:9px;margin-bottom:11px;font-size:12.5px;color:var(--amber-tx);font-weight:500">サキさん：刻印で贈り物を完成</div>'+
+      '<div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:7px;background:var(--chip);border-radius:99px;overflow:hidden"><div style="width:70%;height:100%;background:var(--teal-tx)"></div></div><span style="font-size:11px;color:var(--muted)">開店準備 7/10</span></div>'+
+      tabbar('home')+'</div>'},
+   {t:'2. 開店前チェック', cap:'朝礼シートのチェックリストをタップで完了。進捗が店舗で共有される。',
+    h:'<div class="screen">'+
+      '<div class="ph-hd"><span style="color:var(--muted)">'+ic('arrowl',17)+'</span><span style="font-size:13px;color:var(--muted)">開店前チェック</span><span style="font-size:11px;color:var(--teal-tx)">7/10</span></div>'+
+      ['クロス/ブラシを携帯','名刺・ショップカード','制服にしわ・ほこりなし','VMD：導線確認','クリンネス：売場の床','客注伝票の整理'].map(function(t,i){var done=i<3;return '<div class="card" style="margin-bottom:7px;display:flex;align-items:center;gap:10px"><span style="width:22px;height:22px;border-radius:6px;border:1.5px solid '+(done?'var(--teal-tx)':'var(--line2)')+';background:'+(done?'var(--teal-tx)':'transparent')+';color:#fff;display:flex;align-items:center;justify-content:center">'+(done?ic('check',13):'')+'</span><span style="font-size:12.5px;color:'+(done?'var(--hint)':'var(--ink)')+';text-decoration:'+(done?'line-through':'none')+'">'+t+'</span></div>'}).join('')+
+      tabbar('home')+'</div>'},
+   {t:'3. 録音（共通）', cap:CAP_REC2, h:recordScreen()},
+   {t:'4. AI確認・タグ付け（共通）', cap:CAP_AI, h:aiConfirm()},
+   {t:'5. 接客レシピ＝クックパッド（共通）', cap:CAP_REC, h:cookpad()},
+   {t:'6. メンバー名簿（共通）', cap:CAP_ROS, h:roster()}
+  ]},
+
+C:{tag:'C',name:'＋店舗のホーム',rb:{bg:'var(--teal-bg)',tx:'var(--teal-tx)'},
+  reason:'開く理由：連絡・つながり',
+  strat:'共通コア（レシピ＋VOC＋名簿）の上に、連絡とつながりのレイヤーを足す。Slackで流れない「確認必須の連絡」がここに。バングラも統合し Second Home を体現。',
+  feat:[['流れない連絡','重要連絡を固定ピン＋既読/確認管理（ストック型）'],['メンバー名簿を主役に','他エリアのつながりがホームの中心'],['バングラ連携','家族の声・写真で Second Home を体現'],['（共通）','レシピ・VOC は土台として搭載']],
+  screens:[
+   {t:'1. ホーム（連絡）', cap:'Slackで流れがちな重要連絡を固定＆確認管理。取りこぼしを防ぐ。',
+    h:'<div class="screen">'+
+      '<div class="ph-hd"><span class="logo" style="font-size:16px">LIB HOUSE</span><span style="color:var(--muted)">'+ic('bell',16)+'</span></div>'+
+      '<div style="background:var(--blue-bg);border-radius:10px;padding:9px;margin-bottom:9px"><div style="font-size:10px;color:var(--blue-tx);margin-bottom:2px;display:flex;align-items:center;gap:4px">'+ic('pin',11)+'固定の連絡（流れない）</div><div style="font-size:12.5px;color:var(--blue-tx);font-weight:500;line-height:1.45">秋AWARDの応募〆切 6/30</div><div style="margin-top:6px"><span style="font-size:10px;background:#fff;color:var(--teal-tx);padding:2px 9px;border-radius:99px">✓ 確認した 18/20店</span></div></div>'+
+      '<div style="display:flex;gap:5px;margin-bottom:9px;font-size:11px"><span style="background:var(--ink);color:#fff;padding:4px 9px;border-radius:99px">連絡</span><span style="color:var(--muted);padding:4px 9px">レシピ</span><span style="color:var(--muted);padding:4px 9px">名簿</span><span style="color:var(--muted);padding:4px 9px">バングラ</span></div>'+
+      '<div class="card" style="margin-bottom:8px"><div style="font-size:11px;color:var(--muted);margin-bottom:3px">店舗統括より</div><div style="font-size:12.5px">今週の取り組み：VMD見直し</div></div>'+
+      '<div class="card" style="display:flex;gap:9px;align-items:center"><span style="width:32px;height:32px;border-radius:8px;background:#f6f3ec;display:flex;align-items:center;justify-content:center;color:var(--hint)">'+ic('photo',16)+'</span><div style="font-size:12px;color:var(--muted);line-height:1.4">バングラの家族から<br>「ありがとう」が届いた</div></div>'+
+      tabbar('home')+'</div>'},
+   {t:'2. お知らせ確認', cap:'「読んだ」を残せるので、店舗統括が伝達状況を把握できる。チャットの沼に入らない。',
+    h:'<div class="screen">'+
+      '<div class="ph-hd"><span style="color:var(--muted)">'+ic('arrowl',17)+'</span><span style="font-size:13px;color:var(--muted)">お知らせ</span><span></span></div>'+
+      '<div style="font-size:11px;color:var(--hint);margin-bottom:3px;display:flex;align-items:center;gap:4px">'+ic('pin',12)+'固定</div>'+
+      '<div class="card" style="margin-bottom:12px"><div style="font-size:13px;font-weight:500;margin-bottom:6px">秋AWARDの応募〆切 6/30</div><div style="font-size:12.5px;color:var(--muted);line-height:1.6">各店2エントリーまで。フェローの推薦も歓迎します。</div></div>'+
+      '<button class="btn-primary" style="margin-bottom:12px">✓ 確認しました</button>'+
+      '<div style="font-size:11px;color:var(--hint);margin-bottom:6px">確認状況 18/20店</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:6px">'+['八重洲','天神','中野','梅田','札幌','名古屋'].map(function(s,i){var ok=i<5;return '<span style="font-size:11px;padding:3px 9px;border-radius:99px;background:'+(ok?'var(--teal-bg)':'var(--chip)')+';color:'+(ok?'var(--teal-tx)':'var(--muted)')+'">'+(ok?'✓ ':'')+s+'</span>'}).join('')+'</div>'+
+      '</div>'},
+   {t:'3. 録音（共通）', cap:CAP_REC2, h:recordScreen()},
+   {t:'4. AI確認・タグ付け（共通）', cap:CAP_AI, h:aiConfirm()},
+   {t:'5. 接客レシピ＝クックパッド（共通）', cap:CAP_REC, h:cookpad()},
+   {t:'6. メンバー名簿（共通）', cap:CAP_ROS, h:roster()},
+   {t:'7. バングラのコーナー', cap:'生産者の家族の顔が見える。「Second Home」を最も体現。導入時期は要相談。',
+    h:'<div class="screen">'+
+      '<div class="ph-hd"><span style="font-size:13px;color:var(--muted)">バングラ</span><span style="color:var(--muted)">'+ic('bell',16)+'</span></div>'+
+      '<div class="card" style="margin-bottom:9px;padding:0;overflow:hidden"><div style="height:90px;background:#efece4;display:flex;align-items:center;justify-content:center;color:var(--hint)">'+ic('photo',30)+'</div><div style="padding:9px"><div style="font-size:12.5px;font-weight:500;margin-bottom:3px">あなたの店舗の30人家族</div><div style="font-size:12px;color:var(--muted);line-height:1.5">今月の工場ツアーは6/30 20:00〜</div></div></div>'+
+      '<div class="card" style="display:flex;gap:9px;align-items:center;margin-bottom:8px"><span class="av" style="width:30px;height:30px;background:var(--teal-bg);color:var(--teal-tx)">R</span><div style="font-size:12px;line-height:1.45"><b style="font-weight:500">Rahimaさん</b>から<br>「丁寧に届けてくれてありがとう」</div></div>'+
+      '<div class="card" style="display:flex;gap:9px;align-items:center"><span class="av" style="width:30px;height:30px;background:var(--amber-bg);color:var(--amber-tx)">K</span><div style="font-size:12px;line-height:1.45"><b style="font-weight:500">Karimさん</b>の新作レザーが入荷しました</div></div>'+
+      tabbar('home')+'</div>'}
+  ]}
+};
+
+const state={REC:0,CORE:0,A:0,B:0,C:0};
+function render(key){
+  const p=PATTERNS[key];const idx=state[key];const sc=p.screens[idx];
+  const dots=p.screens.map(function(_,i){return '<span class="dot'+(i===idx?' on':'')+'" data-go="'+i+'"></span>'}).join('');
+  return '<div class="lead">'+
+    '<div class="stage">'+
+      '<div class="sc-title">'+sc.t+'</div>'+
+      '<div class="phone">'+sc.h+'</div>'+
+      '<div class="nav"><button data-dir="-1" '+(idx===0?'disabled':'')+'>'+ic('arrowl',18)+'</button>'+
+      '<div class="dots">'+dots+'</div>'+
+      '<button data-dir="1" '+(idx===p.screens.length-1?'disabled':'')+'><span style="transform:scaleX(-1);display:inline-flex">'+ic('arrowl',18)+'</span></button></div>'+
+      '<div class="screencap"><b>'+sc.t.replace(/^[0-9]+[.\s]*/,'')+'</b> ── '+sc.cap+'</div>'+
+    '</div>'+
+    '<div class="info">'+
+      '<span class="reason-badge" style="background:'+p.rb.bg+';color:'+p.rb.tx+'">'+p.tag+' ・ '+p.reason+'</span>'+
+      '<h2>'+p.name+'</h2>'+
+      '<p class="strat">'+p.strat+'</p>'+
+      '<ul class="feat">'+p.feat.map(function(f){return '<li><span class="k">'+f[0]+'</span><span style="color:var(--muted)">'+f[1]+'</span></li>'}).join('')+'</ul>'+
+    '</div>'+
+  '</div>';
+}
+['REC','CORE','A','B','C'].forEach(function(k){document.querySelector('[data-p="'+k+'"]').innerHTML=render(k);});
+document.querySelectorAll('.panel[data-p]').forEach(function(panel){
+  const k=panel.getAttribute('data-p');if(!PATTERNS[k])return;
+  panel.addEventListener('click',function(e){
+    const nav=e.target.closest('[data-dir]');const dot=e.target.closest('[data-go]');
+    if(nav){state[k]=Math.max(0,Math.min(PATTERNS[k].screens.length-1,state[k]+parseInt(nav.getAttribute('data-dir'))));panel.innerHTML=render(k);}
+    else if(dot){state[k]=parseInt(dot.getAttribute('data-go'));panel.innerHTML=render(k);}
+  });
+});
+document.getElementById('tabs').addEventListener('click',function(e){
+  const b=e.target.closest('.tab');if(!b)return;const t=b.getAttribute('data-t');
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('on',x===b)});
+  document.querySelectorAll('.panel').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-p')===t)});
+});
+</script>
+</body>
+</html>

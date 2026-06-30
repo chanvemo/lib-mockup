@@ -57,7 +57,15 @@
   .dot{width:7px;height:7px;border-radius:50%;background:var(--line2);cursor:pointer;}
   .dot.on{background:var(--ink);}
   .sc-title{text-align:center;font-size:13px;color:var(--muted);margin-bottom:8px;}
-  .screen{min-height:440px;display:flex;flex-direction:column;}
+  .screen{min-height:440px;display:flex;flex-direction:column;position:relative;}
+  .qrow{display:flex;gap:7px;margin-bottom:10px;}
+  .qtile{flex:1;border:.5px solid var(--line);border-radius:10px;padding:8px 2px;text-align:center;color:var(--ink);}
+  .qtile .ql{font-size:9.5px;color:var(--muted);margin-top:3px;}
+  .seg{display:flex;background:#efece4;border-radius:99px;padding:3px;margin-bottom:11px;}
+  .seg span{flex:1;text-align:center;font-size:11px;padding:5px 0;border-radius:99px;color:var(--muted);}
+  .seg span.on{background:var(--surface);color:var(--ink);font-weight:500;}
+  .ovl{position:absolute;inset:0;background:rgba(0,0,0,.18);border-radius:18px;z-index:1;}
+  .ddown{position:absolute;top:42px;right:0;width:190px;background:var(--surface);border:.5px solid var(--line2);border-radius:12px;padding:8px;z-index:2;box-shadow:0 6px 20px rgba(0,0,0,.12);}
   .ph-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
   .logo{font-family:'Times New Roman',Georgia,serif;font-size:19px;letter-spacing:.14em;}
   .sec{font-size:12px;font-weight:500;color:var(--ink);margin:10px 0 6px;}
@@ -105,10 +113,11 @@
     <b>全パターン共通の必須コア：</b>
     <span class="core-pills"><span>① 接客事例の共有＆レシピ図書館</span><span>② 商品改善提案(VOC)</span><span>③ メンバー名簿</span></span>
     <div style="margin-top:6px;color:var(--muted);">接客事例は<b style="color:var(--ink)">クックパッド型のレシピ</b>として蓄積・検索でき（＝LIBの財産）、<b style="color:var(--ink)">つくれぽ</b>（やってみた報告）で投稿者のモチベが続く。A/B/C の違いは、この土台の上に <b style="color:var(--ink)">どんな“毎日開く理由”のレイヤーを足すか</b>。</div>
+    <div style="margin-top:8px;padding-top:8px;border-top:.5px solid var(--line);color:var(--muted);"><b style="color:var(--ink)">6/29 きゅーさんMTG反映：</b>本命は <b style="color:var(--ink)">「★推奨：LIBポータル」</b>。アプリを店舗の業務ポータル（タスク・お知らせ・数字・事例・VOC・名簿）にし、「スマレジ＋LIBポータルで完結／Slackは雑談専用」を目指す。</div>
   </div>
 
   <div class="tabs" id="tabs">
-    <button class="tab on" data-t="REC">★ 推奨：統合案</button>
+    <button class="tab on" data-t="REC">★ 推奨：LIBポータル</button>
     <button class="tab" data-t="CORE">共通コア（必須）</button>
     <button class="tab" data-t="A">A ＋毎朝のニュース</button>
     <button class="tab" data-t="B">B ＋朝礼ハブ</button>
@@ -172,7 +181,10 @@ const I={
  settings:'<path d="M4 6h8"/><path d="M16 6h4"/><path d="M4 12h2"/><path d="M10 12h10"/><path d="M4 18h8"/><path d="M16 18h4"/>',
  pin:'<path d="M9 4v6l-2 4v2h10v-2l-2 -4v-6"/><path d="M12 16v5"/><path d="M8 4h8"/>',
  photo:'<path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"/><path d="M3 16l5 -5c.9 -.9 2.1 -.9 3 0l5 5"/><path d="M14 14l1 -1c.9 -.9 2.1 -.9 3 0l3 3"/>',
- sun:'<path d="M3 17h18"/><path d="M12 3v3"/><path d="M5.6 9.6l-1.4 -1.4"/><path d="M18.4 9.6l1.4 -1.4"/><path d="M8 17a4 4 0 0 1 8 0"/>'
+ sun:'<path d="M3 17h18"/><path d="M12 3v3"/><path d="M5.6 9.6l-1.4 -1.4"/><path d="M18.4 9.6l1.4 -1.4"/><path d="M8 17a4 4 0 0 1 8 0"/>',
+ star:'<path d="M12 17.8l-6.2 3.2l1.2 -6.9l-5 -4.9l6.9 -1l3.1 -6.2l3.1 6.2l6.9 1l-5 4.9l1.2 6.9z"/>',
+ bulb:'<path d="M9 18h6"/><path d="M10 21h4"/><path d="M8.5 14a5 5 0 1 1 7 0a3.5 3.5 0 0 0 -1 3v1h-5v-1a3.5 3.5 0 0 0 -1 -3"/>',
+ chevd:'<path d="M6 9l6 6l6 -6"/>'
 };
 function ic(n,s){s=s||18;return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(I[n]||'')+'</svg>';}
 function tabbar(active){
@@ -302,14 +314,72 @@ function profileSwitch(){
     '</div>';
 }
 function integratedHome(){
+  var tasks=[['POPを新ビジュアルに差し替え','本日','商品開発'],['客注棚の整理','明日','本部']];
+  var quick=[['book','レシピ'],['star','レビュー'],['users','名簿'],['bulb','改善提案']];
   return '<div class="screen">'+
-    '<div class="ph-hd"><span class="logo">LIB</span><span style="display:flex;gap:9px;align-items:center"><span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span class="av" style="width:20px;height:20px;background:var(--amber-bg);color:var(--amber-tx);font-size:10px">り</span>りさこ ▾</span><span style="color:var(--muted)">'+ic('bell',16)+'</span></span></div>'+
-    '<button class="btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;padding:14px;margin-bottom:13px">'+ic('mic',18)+'接客をふりかえる（30秒）</button>'+
+    '<div class="ph-hd"><div><div class="logo">LIB</div><div style="font-size:9px;color:var(--hint);letter-spacing:.02em">あなたの、もう一つの家</div></div><span style="display:flex;gap:9px;align-items:center"><span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span class="av" style="width:20px;height:20px;background:var(--amber-bg);color:var(--amber-tx);font-size:10px">り</span>りさこ ▾</span><span style="color:var(--muted)">'+ic('bell',16)+'</span></span></div>'+
+    '<div class="qrow">'+quick.map(function(q){return '<div class="qtile"><div>'+ic(q[0],17)+'</div><div class="ql">'+q[1]+'</div></div>'}).join('')+'</div>'+
+    '<div class="sec">✅ 今日やること（タスク）</div>'+
+    tasks.map(function(t){return '<div class="card" style="margin-bottom:6px;display:flex;align-items:center;gap:9px"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line2);flex:none"></span><div style="min-width:0;flex:1"><div style="font-size:12.5px;line-height:1.3">'+t[0]+'</div><div style="font-size:10px;color:var(--hint)">'+t[2]+'より</div></div><span style="font-size:10px;background:var(--chip);color:var(--muted);padding:2px 7px;border-radius:99px;flex:none">〜'+t[1]+'</span></div>'}).join('')+
+    '<div style="font-size:10.5px;color:var(--hint);margin-bottom:9px">完了すると消えます ・ 他2件</div>'+
+    '<div class="sec">📌 お知らせ（要確認）</div>'+
+    '<div style="background:var(--blue-bg);border-radius:9px;padding:8px;margin-bottom:11px;display:flex;align-items:center;gap:8px"><div style="flex:1;min-width:0"><div style="font-size:11.5px;font-weight:500;color:var(--blue-tx);line-height:1.35">秋AWARD〆切 6/30</div></div><span style="font-size:10px;background:#fff;color:var(--blue-tx);padding:4px 10px;border-radius:99px;flex:none">確認</span></div>'+
+    '<button class="btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;padding:13px;margin-bottom:12px">'+ic('mic',18)+'接客をふりかえる（30秒）</button>'+
     '<div class="sec">🔥 今週よく読まれている</div>'+
-    RANKS.slice(0,2).map(function(r){return '<div class="card" style="margin-bottom:7px;display:flex;gap:9px;align-items:center"><span class="rankno">'+r[0]+'</span><div style="min-width:0"><div style="font-size:12px;line-height:1.35">'+r[1]+'</div><div style="font-size:10px;color:var(--hint)">'+r[2]+'</div></div></div>'}).join('')+
+    RANKS.slice(0,2).map(function(r){return '<div class="card" style="margin-bottom:6px;display:flex;gap:9px;align-items:center"><span class="rankno">'+r[0]+'</span><div style="min-width:0"><div style="font-size:12px;line-height:1.35">'+r[1]+'</div><div style="font-size:10px;color:var(--hint)">'+r[2]+'</div></div></div>'}).join('')+
     '<div class="sec">☀️ 今日の朝礼</div>'+
-    '<div style="display:flex;gap:6px;margin-bottom:8px">'+[['入店','84'],['客単価','¥9k'],['購買率','32%']].map(function(m){return '<div style="flex:1;background:#f6f3ec;border-radius:9px;padding:6px 3px;text-align:center"><div style="font-size:9px;color:var(--muted)">'+m[0]+'</div><div style="font-size:14px;font-weight:500">'+m[1]+'</div></div>'}).join('')+'</div>'+
-    '<div style="background:var(--blue-bg);border-radius:9px;padding:8px"><span style="display:inline-flex;gap:4px;align-items:center;font-size:10px;color:var(--blue-tx);margin-bottom:2px">'+ic('pin',11)+'連絡（要確認）</span><div style="font-size:11.5px;font-weight:500;line-height:1.4;color:var(--blue-tx)">秋AWARD〆切 6/30 ・ 刻印機メンテ14時</div></div>'+
+    '<div style="display:flex;gap:6px">'+[['入店','84'],['客単価','¥9k'],['購買率','32%']].map(function(m){return '<div style="flex:1;background:#f6f3ec;border-radius:9px;padding:6px 3px;text-align:center"><div style="font-size:9px;color:var(--muted)">'+m[0]+'</div><div style="font-size:14px;font-weight:500">'+m[1]+'</div></div>'}).join('')+'</div>'+
+    tabbar('home')+'</div>';
+}
+function tasksScreen(){
+  var tasks=[['POPを新ビジュアルに差し替え','本日','商品開発',false],['客注棚の整理','明日','本部',false],['新色バッグの検品','明日','商品開発',false],['先月のレビュー返信','完了','PR',true]];
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="font-size:13px;color:var(--muted)">やること（タスク）</span><span style="font-size:11px;color:var(--hint)">未完了 3</span></div>'+
+    '<div style="display:flex;gap:5px;margin-bottom:10px;font-size:11px"><span style="background:var(--ink);color:#fff;padding:4px 10px;border-radius:99px">未完了</span><span class="chip">すべて</span><span class="chip">完了</span></div>'+
+    tasks.map(function(t){return '<div class="card" style="margin-bottom:7px;display:flex;align-items:center;gap:9px;'+(t[3]?'opacity:.5':'')+'"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid '+(t[3]?'var(--teal-tx)':'var(--line2)')+';background:'+(t[3]?'var(--teal-tx)':'transparent')+';color:#fff;flex:none;display:flex;align-items:center;justify-content:center">'+(t[3]?ic('check',12):'')+'</span><div style="flex:1;min-width:0"><div style="font-size:12.5px;line-height:1.3;'+(t[3]?'text-decoration:line-through':'')+'">'+t[0]+'</div><div style="font-size:10px;color:var(--hint)">'+t[2]+'より</div></div><span style="font-size:10px;background:var(--chip);color:var(--muted);padding:2px 7px;border-radius:99px;flex:none">'+(t[3]?'済':'〜'+t[1])+'</span></div>'}).join('')+
+    '<div style="font-size:10.5px;color:var(--hint);text-align:center;margin-top:6px">他チームの依頼がここに届く ／ 完了で自動的に消える</div>'+
+    tabbar('home')+'</div>';
+}
+function noticeScreen(){
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="color:var(--muted)">'+ic('arrowl',17)+'</span><span style="font-size:13px;color:var(--muted)">お知らせ</span><span></span></div>'+
+    '<div style="font-size:11px;color:var(--hint);margin-bottom:3px;display:flex;align-items:center;gap:4px">'+ic('pin',12)+'固定</div>'+
+    '<div class="card" style="margin-bottom:12px"><div style="font-size:13px;font-weight:500;margin-bottom:6px">秋AWARDの応募〆切 6/30</div><div style="font-size:12.5px;color:var(--muted);line-height:1.6">各店2エントリーまで。フェローの推薦も歓迎します。</div></div>'+
+    '<button class="btn-primary" style="margin-bottom:12px">✓ 確認しました</button>'+
+    '<div style="font-size:11px;color:var(--hint);margin-bottom:6px">確認状況 18/20店</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:6px">'+['八重洲','天神','中野','梅田','札幌','名古屋'].map(function(s,i){var ok=i<5;return '<span style="font-size:11px;padding:3px 9px;border-radius:99px;background:'+(ok?'var(--teal-bg)':'var(--chip)')+';color:'+(ok?'var(--teal-tx)':'var(--muted)')+'">'+(ok?'✓ ':'')+s+'</span>'}).join('')+'</div>'+
+    '<div style="font-size:10.5px;color:var(--hint);text-align:center;margin-top:14px">「確認しました」を押すと一覧から下がる ／ 依頼元は完了店舗が見える</div>'+
+    '</div>';
+}
+function googleReviews(){
+  var byStore=[['八重洲','4.8'],['天神','4.6'],['梅田','4.5'],['中野','4.1']];
+  return '<div class="screen">'+
+    '<div class="ph-hd"><span style="font-size:13px;color:var(--muted)">Googleレビュー</span><span style="color:var(--hint)">'+ic('search',15)+'</span></div>'+
+    '<div class="seg"><span class="on">全店</span><span>エリア</span><span>店舗</span></div>'+
+    '<div style="display:flex;gap:8px;margin-bottom:11px">'+[['全店平均','★4.6'],['今週','+18件'],['要返信','3']].map(function(m){return '<div style="flex:1;background:#f6f3ec;border-radius:9px;padding:7px 3px;text-align:center"><div style="font-size:9px;color:var(--muted)">'+m[0]+'</div><div style="font-size:15px;font-weight:500">'+m[1]+'</div></div>'}).join('')+'</div>'+
+    '<div class="sec">店舗別ランキング（タップで詳細）</div>'+
+    byStore.map(function(s){var w=Math.round(parseFloat(s[1])/5*100);return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="font-size:11px;width:42px;flex:none">'+s[0]+'</span><div style="flex:1;height:8px;background:var(--chip);border-radius:99px;overflow:hidden"><div style="width:'+w+'%;height:100%;background:var(--amber-tx);opacity:.55"></div></div><span style="font-size:11px;color:var(--amber-tx);width:30px;text-align:right;flex:none">★'+s[1]+'</span></div>'}).join('')+
+    '<div class="sec">要返信（全店）</div>'+
+    '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><span style="font-size:12px;color:var(--amber-tx)">★★★<span style="color:var(--line2)">★★</span></span><span style="font-size:10px;background:var(--pink-bg);color:var(--pink-tx);padding:2px 8px;border-radius:99px">要返信</span></div><div style="font-size:12px;line-height:1.4">商品は良いが在庫が少なめ</div><div style="font-size:10px;color:var(--hint);margin-top:3px">中野店</div></div>'+
+    '<div style="font-size:10.5px;color:var(--hint);text-align:center;margin-top:8px">全店／エリア／店舗で切替。店舗を選ぶと自店の一覧へドリルダウン</div>'+
+    tabbar('home')+'</div>';
+}
+function switcherSheet(){
+  var ppl=[['りさこ','店長','var(--amber-bg)','var(--amber-tx)',true],['あおん','フェロー','var(--blue-bg)','var(--blue-tx)',false],['りょう','フェロー','var(--teal-bg)','var(--teal-tx)',false],['さき','フェロー','var(--pink-bg)','var(--pink-tx)',false]];
+  return '<div class="screen">'+
+    '<div class="ph-hd"><div><div class="logo">LIB</div><div style="font-size:9px;color:var(--hint)">あなたの、もう一つの家</div></div><span style="display:flex;gap:9px;align-items:center"><span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--ink);background:var(--chip);padding:3px 8px;border-radius:99px"><span class="av" style="width:18px;height:18px;background:var(--amber-bg);color:var(--amber-tx);font-size:9px">り</span>りさこ ▾</span><span style="color:var(--hint)">'+ic('bell',16)+'</span></span></div>'+
+    '<div class="qrow" style="opacity:.4">'+[['book','レシピ'],['star','レビュー'],['users','名簿'],['bulb','改善提案']].map(function(q){return '<div class="qtile"><div>'+ic(q[0],17)+'</div><div class="ql">'+q[1]+'</div></div>'}).join('')+'</div>'+
+    '<div style="opacity:.4"><div class="sec">✅ 今日やること</div><div class="card" style="height:34px"></div></div>'+
+    '<div class="ovl"></div>'+
+    '<div class="ddown">'+
+      '<div style="font-size:11px;color:var(--muted);margin-bottom:7px;padding:0 2px">メンバーを切り替え</div>'+
+      '<div class="search" style="margin-bottom:8px;padding:6px 10px">'+ic('search',13)+'名前で検索</div>'+
+      ppl.map(function(p){return '<div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-radius:8px;'+(p[4]?'background:var(--chip)':'')+'"><span class="av" style="width:26px;height:26px;background:'+p[2]+';color:'+p[3]+';font-size:11px">'+p[0].charAt(0)+'</span><div style="flex:1;min-width:0"><div style="font-size:12px;line-height:1.1">'+p[0]+'</div><div style="font-size:9.5px;color:var(--hint)">'+p[1]+'</div></div>'+(p[4]?'<span style="color:var(--teal-tx)">'+ic('check',14)+'</span>':'')+'</div>'}).join('')+
+      '<div style="border-top:.5px solid var(--line);margin-top:6px;padding-top:7px;display:flex;flex-direction:column;gap:7px">'+
+        '<span style="font-size:11px;color:var(--ink);display:flex;align-items:center;gap:6px"><span style="color:var(--muted)">'+ic('plus',13)+'</span>メンバーを追加</span>'+
+        '<span style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px">'+ic('user',13)+'個人として使う／ログアウト</span>'+
+      '</div>'+
+    '</div>'+
     tabbar('home')+'</div>';
 }
 
@@ -320,18 +390,21 @@ const CAP_AI='1本の声から事例とVOC(要望)を自動抽出。全パター
 const CAP_ROS='他エリアの仲間の人となりが分かる。店舗間の距離を縮める。全パターン共通。';
 
 const PATTERNS={
-REC:{tag:'★ 推奨',name:'統合MVP案（プロUIUX推奨）',rb:{bg:'var(--teal-bg)',tx:'var(--teal-tx)'},
-  reason:'開きたい × 開く必要 × 簡単',
-  strat:'採用率が最大の壁。だから「開く必要がある（朝礼）」と「開きたくなる（ランキング・つくれぽ）」を1つのホームに統合し、Cの“流れない連絡”を軽く足す。録音は大きく明示。店舗共有端末でも個人切替で投稿できる（ITが苦手な人も安心）。',
-  feat:[['統合ホーム','ランキング＋朝礼の数字/連絡＋大きな振り返りボタンを1画面に'],['共通コア','レシピ図書館＋つくれぽ＋VOC＋名簿'],['流れない連絡','C由来。Slack取りこぼし対策を軽量に'],['店舗端末＋個人切替','Netflix風プロフィール選択で誰でも投稿']],
+REC:{tag:'★ 推奨',name:'LIBポータル（統合・推奨）',rb:{bg:'var(--teal-bg)',tx:'var(--teal-tx)'},
+  reason:'業務集約 × 開きたい × 簡単',
+  strat:'きゅーさんMTG(6/29)反映。アプリを店舗の“業務ポータル”に。タスク・お知らせ・数字・接客事例・VOC・名簿を1か所に集約し、「スマレジ＋LIBポータルで完結／Slackは雑談専用」を目指す。最上部にタスクとお知らせ＝毎日開く必要がある。ランキング・つくれぽ＝開きたくなる。店舗端末＋個人切替で誰でも投稿。※朝礼のフル機能（書き込み・対話）とGoogleレビュー連携は段階導入。',
+  feat:[['業務ポータル','タスク・お知らせ・数字・レビューを1か所に。Slackは雑談専用に'],['タスク管理','他チームの依頼が届く→対応→完了で消える（スプシ/Slack置換）'],['お知らせ（流れない）','締切・店舗別の確認ボタン・完了で下がる'],['開きたい仕掛け','ランキング・つくれぽ・讃え合いフィード'],['共通コア','レシピ図書館＋VOC＋メンバー名簿'],['店舗端末＋個人切替','Netflix風。PC/タブレットでも開ける']],
   screens:[
-   {t:'1. 統合ホーム（推奨）', cap:'ランキング(開きたい)＋朝礼(開く必要)＋大きな“ふりかえり”ボタンを1画面に。迷わない。', h:integratedHome()},
-   {t:'2. ユーザー切替（店舗端末）', cap:'店舗共有端末でも「今日は誰？」で個人を選び、投稿は個人として残る（Netflix風）。', h:profileSwitch()},
-   {t:'3. 録音（共通）', cap:CAP_REC2, h:recordScreen()},
-   {t:'4. AI確認・タグ付け（共通）', cap:CAP_AI, h:aiConfirm()},
-   {t:'5. 接客レシピ＝クックパッド（共通）', cap:CAP_REC, h:cookpad()},
-   {t:'6. レシピ詳細・つくれぽ（共通）', cap:CAP_TUK, h:recipeDetail()},
-   {t:'7. メンバー名簿（共通）', cap:CAP_ROS, h:roster()}
+   {t:'1. ポータルホーム（推奨・ハイブリッド）', cap:'ヘッダーに細いビジョン＋上部にクイックアクセス1段（レシピ/レビュー/名簿/改善提案）、その下に縦フィード（タスク→お知らせ→ふりかえり→ランキング→朝礼）。開きたい×迷わないを両立。', h:integratedHome()},
+   {t:'2. タスク管理', cap:'他チームの依頼タスクが届く→対応→完了で自動的に消える。期限・依頼元が見える（スプシ/Slack連携）。', h:tasksScreen()},
+   {t:'3. お知らせ・確認', cap:'締切つき・店舗ごとに「確認しました」・完了で下がる。流れて見失う問題を解消。', h:noticeScreen()},
+   {t:'4. Googleレビュー（全店／エリア／店舗）', cap:'上部の切替で全店・エリア・店舗を行き来。全店は店舗別ランキング、店舗を選ぶと自店の一覧へ。要返信を横断表示。', h:googleReviews()},
+   {t:'5. メンバー切替（右上から）', cap:'右上のアバターをタップ→登録メンバー一覧が降りてワンタップ切替。追加・個人/ログアウトも。投稿は個人に紐づく。', h:switcherSheet()},
+   {t:'6. ユーザー切替（店舗端末ロック）', cap:'店舗共有端末の入口。「今日は誰？」で個人を選んでから使う。個人スマホに抵抗がある人も参加できる。', h:profileSwitch()},
+   {t:'7. 録音（共通）', cap:CAP_REC2+' PC/タブレットでも可。', h:recordScreen()},
+   {t:'8. AI確認・タグ付け（共通）', cap:CAP_AI, h:aiConfirm()},
+   {t:'9. 接客レシピ＝クックパッド（共通）', cap:CAP_REC, h:cookpad()},
+   {t:'10. メンバー名簿（共通）', cap:CAP_ROS, h:roster()}
   ]},
 CORE:{tag:'共通',name:'共通コア（全パターン必須）',rb:{bg:'#e4e0d6',tx:'#5f5e5a'},
   reason:'どのパターンにも必ず入る土台',
